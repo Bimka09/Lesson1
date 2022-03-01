@@ -14,8 +14,11 @@ namespace Lesson1
         static void Main(string[] args)
         {
             //CreateClientsTable();
+            //Console.WriteLine(value: $"Created table by {nameof(CreateClientsTable)}.");
             //CreateProductsTable();
+            //Console.WriteLine(value: $"Created table by {nameof(CreateProductsTable)}.");
             //CreateTransactionsTable();
+            //Console.WriteLine(value: $"Created table by {nameof(CreateTransactionsTable)}.");
             //InsertClientsWithParams();
             //InsertProductsWithParams();
             //InsertTransactionsWithParams();
@@ -82,7 +85,7 @@ namespace Lesson1
 
             string affectedRowsCount = cmd.ExecuteNonQuery().ToString();
 
-            Console.WriteLine(value: $"Created CLIENTS table. Affected rows count: {affectedRowsCount}");//DEFAULT CURRENT_TIMESTAMP(),
+            Console.WriteLine(value: $"Created Products table. Affected rows count: {affectedRowsCount}");//DEFAULT CURRENT_TIMESTAMP(),
         }
         static void CreateTransactionsTable()
         {
@@ -111,7 +114,7 @@ namespace Lesson1
 
             string affectedRowsCount = cmd.ExecuteNonQuery().ToString();
 
-            Console.WriteLine(value: $"Created CLIENTS table. Affected rows count: {affectedRowsCount}");
+            Console.WriteLine(value: $"Created Transactions table. Affected rows count: {affectedRowsCount}");
         }
         static void InsertClientsWithParams()
         {
@@ -226,7 +229,7 @@ namespace Lesson1
             using NpgsqlConnection connection = new NpgsqlConnection(connectionString: ConnectionString);
             connection.Open();
 
-            var sql = @"select * from " + tables[number - 1];
+            var sql = @"SELECT * FROM " + tables[number - 1] + " LIMIT 1";
             using NpgsqlCommand cmd = new NpgsqlCommand(cmdText: sql, connection: connection);
             var reader = cmd.ExecuteReader();
             var parameters = new Dictionary<string, string>();
@@ -294,7 +297,7 @@ namespace Lesson1
             NpgsqlParameterCollection parameters = cmd.Parameters;
             foreach (var element in data)
             {
-                if(int.TryParse( element.Value, out _))
+                if(long.TryParse( element.Value, out _))
                 {
                     parameters.Add(value: new NpgsqlParameter(parameterName: element.Key, value: Convert.ToInt64(element.Value)));
                 }
@@ -322,7 +325,7 @@ namespace Lesson1
             NpgsqlParameterCollection parameters = cmd.Parameters;
             foreach (var element in data)
             {
-                if (int.TryParse(element.Value, out _))
+                if (long.TryParse(element.Value, out _))
                 {
                     parameters.Add(value: new NpgsqlParameter(parameterName: element.Key, value: Convert.ToInt64(element.Value)));
                 }
@@ -335,16 +338,16 @@ namespace Lesson1
             string affectedRowsCount = cmd.ExecuteNonQuery().ToString();
             Console.WriteLine(value: $"Insert into CLIENTS table. Affected rows count: {affectedRowsCount}");
         }
-        static int CheckInputTable()
+        static long CheckInputTable()
         {
             Console.WriteLine($"Возможо добавление в следующие таблицы: {String.Join(", ", tables)}. Введите цифру интересной");
-            int number = 1;
+            long number = 1;
             bool checker = true;
             do
             {
-                if (checker = false || (number > tables.Count || number < 1))
+                if (checker == false || (number > tables.Count || number < 1))
                     Console.WriteLine($"Некорректный ввод. Возможен от 1 до {tables.Count}");
-                checker = int.TryParse(Console.ReadLine(), out number);
+                checker = long.TryParse(Console.ReadLine(), out number);
 
             } while (number > tables.Count || number < 1);
 
@@ -364,7 +367,7 @@ namespace Lesson1
                         break;
                     case "Int64":
                         userInput = Console.ReadLine();
-                        checker = int.TryParse(userInput, out _);
+                        checker = long.TryParse(userInput, out _);
                         if (checker == false)
                         {
                             Console.WriteLine($"Не удалось преобразовать параметр под тип {fieldType}. Повторите ввод:");
